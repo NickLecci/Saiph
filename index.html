@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saiph CRM 4.0</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-type="module">
+import { useState, useEffect } from "react";
+
+const LOGO = "data:image/png;base64,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";
+
+const C = {
+  bg: "linear-gradient(145deg,#F8F5F0 0%,#EDE8E0 40%,#F2EDE6 100%)",
+  cream: "rgba(255,252,248,0.72)",
+  border: "rgba(255,255,255,0.6)",
+  shadow: "0 2px 16px rgba(139,115,85,0.07)",
+  label: "#C8BFB0",
+  muted: "#8B8078",
+  ink: "#1A1710",
+  mono: "'IBM Plex Mono',monospace",
+  serif: "'Cormorant Garamond',serif",
+  sans: "'DM Sans','Helvetica Neue',sans-serif",
+};
+
+const glass = (extra = {}) => ({
+  background: C.cream,
+  backdropFilter: "blur(14px)",
+  WebkitBackdropFilter: "blur(14px)",
+  border: `1px solid ${C.border}`,
+  borderRadius: 16,
+  boxShadow: C.shadow,
+  ...extra,
+});
+
+const MODULES = [
+  {
+    id:"intelligence", num:"I", label:"Intelligence & Mercato", sub:"L'Occhio Esterno", color:"#8B7355",
+    cards:[
+      {tag:"LIVE",   title:"Competitor Trend Scraper",  desc:"Monitoraggio sold-out e low-stock in tempo reale su Zara, H&M, Mango e altri 14 brand.", metric:"847",    unit:"alert oggi",      trend:"+23% vs ieri",    status:"active"},
+      {tag:"TREND",  title:"Social Real-Time Radar",    desc:"Analisi virale al minuto: colori, tessuti e silhouette emergenti prima della concorrenza.", metric:"3",      unit:"trend virali",    trend:"Mauve +340%",     status:"active"},
+      {tag:"DAILY",  title:"AI Social Recap",           desc:"Report automatizzati su performance, sentiment e interazioni dei canali social aziendali.", metric:"98.4",   unit:"sentiment score", trend:"↑ +12 punti",     status:"ready"},
+    ],
+  },
+  {
+    id:"clienti", num:"II", label:"Gestione Clienti B2B", sub:"Fidelizzazione & Ordini", color:"#5C7A6B",
+    cards:[
+      {tag:"GEN AI", title:"Digital Marketing Kit",    desc:"Post Instagram, caption e strategie di vendita generate automaticamente sull'ultimo ordine.", metric:"1.247",  unit:"kit generati",    trend:"Avg. 4s cadauno", status:"active"},
+      {tag:"AR",     title:"AR Pre-Order & Forecast",  desc:"Visualizzazione capi in anteprima e raccolta pre-ordini: produzione su venduto garantito.",  metric:"€2.1M",  unit:"pre-ordinati",    trend:"ROI +180%",       status:"beta"},
+      {tag:"AI",     title:"Customer Scoring & Alert", desc:"Identifica i migliori clienti per fatturato e segnala i bad client con resi eccessivi.",     metric:"47",     unit:"alert attivi",    trend:"12 bad clients",  status:"alert"},
+      {tag:"DATA",   title:"Social-Retail Match",      desc:"Database arricchito con metriche Instagram per identificare i negozi più influenti.",         metric:"2.847",  unit:"negozi mappati",  trend:"Top: @bout_mi",   status:"active"},
+    ],
+  },
+  {
+    id:"finance", num:"III", label:"Finance & Amministrazione", sub:"Controllo Economico", color:"#5C6B8B",
+    cards:[
+      {tag:"CFO",    title:"Financial Control Tower",  desc:"Fatturato giornaliero, mensile e margini in tempo reale. Top prodotti sempre in evidenza.",  metric:"€847K",  unit:"fatturato oggi",  trend:"+18% vs LY",      status:"active"},
+      {tag:"OCR",    title:"Fatturazione Snap-to-Data",desc:"Inserimento fatture con un selfie: OCR + AI estraggono codici, importi e dati fiscali.",     metric:"98.7%",  unit:"accuratezza OCR", trend:"1.2K fatture/die",status:"active"},
+      {tag:"ALGO",   title:"Prezzi Dinamici",          desc:"Algoritmo che suggerisce variazioni di prezzo in base a velocità di vendita e giacenza.",    metric:"+8.4%",  unit:"margine medio",   trend:"34 ottimizzazioni",status:"active"},
+      {tag:"BI",     title:"Analisi Margini & Budget", desc:"Confronto continuo budget vs consuntivo reale, drill-down per prodotto, canale e stagione.", metric:"€1.2M",  unit:"margine netto YTD",trend:"Target €1.5M",    status:"ready"},
+    ],
+  },
+  {
+    id:"operations", num:"IV", label:"Operatività & Logistica", sub:"Efficienza Operativa", color:"#6B5535",
+    cards:[
+      {tag:"APP",    title:"Inquadra & Ordina",        desc:"Riassortimento immediato: inquadra l'etichetta, inserisci quantità e colore. Ordine in 10s.", metric:"3.421",  unit:"scan oggi",       trend:"Avg: 8s/ordine",  status:"active"},
+      {tag:"LIVE",   title:"Live Tracking Omnichannel",desc:"Tutte le spedizioni in un'unica mappa: materie prime in entrata e consegne in uscita.",     metric:"847",    unit:"spedizioni attive",trend:"23 in ritardo",   status:"alert"},
+      {tag:"SYNC",   title:"Sincronizzazione Totale",  desc:"App cliente e CRM perfettamente allineati: visione univoca di stock, ordini e disponibilità.",metric:"99.97%", unit:"uptime sistema",  trend:"Δ 0.3s latency",  status:"active"},
+    ],
+  },
+  {
+    id:"governance", num:"V", label:"Governance & Executive", sub:"Per il CEO", color:"#7A5C5C",
+    cards:[
+      {tag:"VOICE",  title:"Voice-Command Analytics",  desc:'Interroga il CRM con la voce: "Mostrami i trend" o "Quanto venduto del codice X?"',         metric:"142",    unit:"query/giorno",    trend:"Latency: 1.2s",   status:"active"},
+      {tag:"EXEC",   title:"KPI Dashboard CEO",        desc:"Vista consolidata dei 12 KPI strategici: sell-through, DSO, margine lordo, NPS clienti.",    metric:"12",     unit:"KPI monitorati",  trend:"8 on target",     status:"active"},
+      {tag:"ALERT",  title:"Executive Alert System",   desc:"Notifiche push prioritizzate su anomalie critiche: cali vendita, ritardi, bad client.",      metric:"3",      unit:"alert critici",   trend:"↓ −5 vs ieri",    status:"alert"},
+    ],
+  },
+  {
+    id:"people", num:"VI", label:"People First", sub:"Da Fare", color:"#7A6B8B",
+    cards:[
+      {tag:"TODO", title:"Intervista i Dipendenti", desc:"Prima di digitalizzare qualsiasi processo, parla con chi lo vive ogni giorno. Loro sanno già cosa fa perdere tempo, cosa è ripetitivo e cosa potrebbe fare un'AI al posto loro.", metric:"—", unit:"da schedulare", trend:"Priorità alta", status:"ready"},
+    ],
+  },
+  {
+    id:"ai_commerce", num:"VII", label:"AI Commerce Layer", sub:"Chatbot & Ordine Vocale", color:"#4B7A8B",
+    cards:[
+      {tag:"CHATBOT",  title:"AI Assistant — Sito Web",    desc:"Chatbot intelligente integrato sul sito B2B: risponde a domande su catalogo, disponibilità, prezzi e permette di costruire un ordine direttamente in chat.", metric:"—", unit:"da attivare", trend:"Integrazione JS", status:"ready"},
+      {tag:"VOICE",    title:"Ordine Vocale — App Cliente", desc:"Il negoziante parla in linguaggio naturale: 'Voglio 10 blazer mauve taglia 42 e 5 cargo beige taglia 38'. L'AI struttura automaticamente l'ordine con SKU, quantità, colore e taglia.", metric:"—", unit:"da attivare", trend:"iOS + Android", status:"ready"},
+      {tag:"NLP",      title:"Parser Ordini Naturale",      desc:"Motore NLP che trasforma testo libero o audio trascritto in ordini strutturati pronti per il gestionale: zero errori di inserimento, zero chiamate di conferma.", metric:"—", unit:"da attivare", trend:"Accuracy >97%",  status:"ready"},
+      {tag:"OMNI",     title:"AI su WhatsApp & Email",      desc:"Lo stesso assistente disponibile su WhatsApp Business e via email: il cliente scrive in modo naturale, l'AI risponde e genera l'ordine strutturato in automatico.", metric:"—", unit:"da attivare", trend:"Multi-canale",  status:"ready"},
+    ],
+  },
+];
+
+const STATUS = {
+  active:{ label:"ATTIVO", dot:"#5C7A5C" },
+  beta:  { label:"BETA",   dot:"#8B7355" },
+  alert: { label:"ALERT",  dot:"#8B5C5C" },
+  ready: { label:"PRONTO", dot:"#5C6B7A" },
+};
+
+const TREND_VIRALI = [
+  {label:"Trend Virale #1", value:"Mauve",    sub:"+340% menzioni", color:"#8B7355"},
+  {label:"Trend Virale #2", value:"Wide Leg", sub:"+210% ultime 6h",color:"#8B7355"},
+  {label:"Ordini in Coda",  value:"234",      sub:"da processare",  color:"#6B5535"},
+  {label:"Margine Medio",   value:"+8.4%",    sub:"34 SKU ottimizzati",color:"#5C6B8B"},
+];
+
+// Sold-out competitor items with Unsplash fashion photos
+const SOLDOUT = [
+  { brand:"Zara",   capo:"Blazer Oversize Linen",  taglia:"S/M",  ore:"2h fa",  img:"data:image/png;base64,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" },
+  { brand:"H&M",    capo:"Wide Leg Cargo Beige",   taglia:"38/40",ore:"4h fa",  img:"data:image/png;base64,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" },
+  { brand:"Mango",  capo:"Midi Dress Cream",        taglia:"S",    ore:"6h fa",  img:"data:image/png;base64,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" },
+  { brand:"Zara",   capo:"Shirt Oversize Ecru",     taglia:"XS/S", ore:"8h fa",  img:"data:image/png;base64,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" },
+];
+
+// I nostri migliori (ultimi 7 giorni)
+const NOSTRI_MIGLIORI = [
+  { nome:"Blazer Mauve Slim",    sku:"SAI-2024-BM", venduti:847, img:"data:image/png;base64,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" },
+  { nome:"Cargo Linen Sabbia",   sku:"SAI-2024-CL", venduti:623, img:"data:image/png;base64,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" },
+  { nome:"Trench Camel Classic", sku:"SAI-2024-TC", venduti:541, img:"data:image/png;base64,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" },
+  { nome:"Midi Dress Ivory",     sku:"SAI-2024-MD", venduti:498, img:"data:image/png;base64,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" },
+];
+
+const ALERTS = [
+  {text:"SKU Shirt Oversize XS — esaurimento previsto in 24h", color:"#8B5C5C", time:"07:42"},
+  {text:"23 spedizioni in ritardo · richiede attenzione",       color:"#8B5C5C", time:"08:15"},
+  {text:"Bad client: @modashop_roma — tasso resi 38%",          color:"#8B7355", time:"09:03"},
+  {text:"Mauve trend +340% — stock consigliato +200pz",         color:"#5C7A6B", time:"10:11"},
+];
+
+const VOICE_Q = ["Fatturato di oggi","Top 3 prodotti settimana","Alert critici attivi","Spedizioni in ritardo"];
+
+function Card({ children, style = {} }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{ ...glass(), padding:"22px 24px", transition:"all 0.22s",
+        boxShadow: hov ? "0 6px 28px rgba(139,115,85,0.13)" : C.shadow,
+        background: hov ? "rgba(255,252,248,0.88)" : C.cream, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function Tag({ label, color }) {
+  return <span style={{ fontSize:8, background:`${color}18`, color, padding:"3px 7px", letterSpacing:2 }}>{label}</span>;
+}
+
+function StatusDot({ status }) {
+  const s = STATUS[status];
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:4 }}>
+      <div style={{ width:4, height:4, borderRadius:"50%", background:s.dot }} />
+      <span style={{ fontSize:8, color:C.label, letterSpacing:1.5 }}>{s.label}</span>
+    </div>
+  );
+}
+
+function Metric({ value, unit, trend, color }) {
+  return (
+    <div style={{ display:"flex", alignItems:"baseline", gap:8, marginTop:14 }}>
+      <span style={{ fontFamily:C.mono, fontSize:20, fontWeight:500, color, letterSpacing:-0.5 }}>{value}</span>
+      <span style={{ fontSize:9, color:C.label, letterSpacing:1 }}>{unit}</span>
+      <span style={{ fontSize:9, color:C.muted, marginLeft:"auto" }}>{trend}</span>
+    </div>
+  );
+}
+
+function SectionLabel({ children }) {
+  return <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:14 }}>{children}</div>;
+}
+
+function DashboardView({ onScan, scanResult, onInvoice, invoiceResult }) {
+  const [scanVal, setScanVal] = useState("");
+  return (
+    <div style={{ animation:"fadeUp 0.3s ease" }}>
+      <div style={{ marginBottom:28 }}>
+        <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:6 }}>PANORAMICA LIVE</div>
+        <h1 style={{ fontFamily:C.serif, fontSize:26, fontWeight:400, color:C.ink, marginBottom:12 }}>Dashboard</h1>
+        <div style={{ height:1, background:"linear-gradient(90deg,#8B735555,transparent)" }} />
+      </div>
+
+      <SectionLabel>TREND IN TEMPO REALE</SectionLabel>
+
+      {/* Top row: 4 stat tiles */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:16 }}>
+        {TREND_VIRALI.map((t,i) => (
+          <Card key={i} style={{ padding:"16px 18px" }}>
+            <div style={{ fontSize:8, color:C.label, letterSpacing:2, marginBottom:6 }}>{t.label.toUpperCase()}</div>
+            <span style={{ fontFamily:C.mono, fontSize:18, fontWeight:600, color:t.color }}>{t.value}</span>
+            <div style={{ fontSize:10, color:C.muted, marginTop:3 }}>{t.sub}</div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Bottom row: Sold-Out Competitor + I Nostri Migliori */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:32 }}>
+
+        {/* SOLD-OUT COMPETITOR */}
+        <Card style={{ padding:"20px 22px" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
+            <div style={{ fontSize:8, color:"#5C7A6B", letterSpacing:3 }}>SOLD-OUT COMPETITOR</div>
+            <div style={{ display:"flex", alignItems:"center", gap:4 }}>
+              <div style={{ width:5, height:5, borderRadius:"50%", background:"#5C7A6B", animation:"pulse 2s infinite" }} />
+              <span style={{ fontSize:8, color:C.label, letterSpacing:1 }}>LIVE</span>
+            </div>
+          </div>
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {SOLDOUT.map((item,i) => (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"8px 10px", background:"rgba(237,233,227,0.5)", borderRadius:10 }}>
+                <div style={{ width:48, height:60, borderRadius:8, overflow:"hidden", flexShrink:0 }}>
+                  <img src={item.img} alt={item.capo} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+                </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:11, fontWeight:600, color:C.ink, marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{item.capo}</div>
+                  <div style={{ fontSize:9, color:C.muted }}>{item.brand} · Tg. {item.taglia}</div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ fontSize:8, background:"#8B5C5C18", color:"#8B5C5C", padding:"2px 6px", borderRadius:4, letterSpacing:1, marginBottom:2 }}>SOLD OUT</div>
+                  <div style={{ fontSize:8, color:C.label }}>{item.ore}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* I NOSTRI MIGLIORI */}
+        <Card style={{ padding:"20px 22px" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
+            <div style={{ fontSize:8, color:"#8B7355", letterSpacing:3 }}>I NOSTRI MIGLIORI</div>
+            <div style={{ fontSize:8, color:C.label, letterSpacing:1 }}>ULTIMI 7 GIORNI</div>
+          </div>
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {NOSTRI_MIGLIORI.map((item,i) => (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"8px 10px", background:"rgba(237,233,227,0.5)", borderRadius:10 }}>
+                <div style={{ fontSize:12, fontFamily:C.mono, fontWeight:700, color:"#C8BFB0", width:18, textAlign:"center", flexShrink:0 }}>#{i+1}</div>
+                <div style={{ width:48, height:60, borderRadius:8, overflow:"hidden", flexShrink:0 }}>
+                  <img src={item.img} alt={item.nome} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+                </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:11, fontWeight:600, color:C.ink, marginBottom:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{item.nome}</div>
+                  <div style={{ fontSize:9, color:C.muted }}>{item.sku}</div>
+                </div>
+                <div style={{ textAlign:"right", flexShrink:0 }}>
+                  <div style={{ fontFamily:C.mono, fontSize:13, fontWeight:600, color:"#8B7355" }}>{item.venduti}</div>
+                  <div style={{ fontSize:8, color:C.label }}>pz venduti</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+      </div>
+
+      <SectionLabel>AZIONI RAPIDE</SectionLabel>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+
+        {/* Inquadra & Ordina */}
+        <Card>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+            <Tag label="APP" color="#6B5535" />
+            <span style={{ fontFamily:C.serif, fontSize:15, color:C.ink }}>Inquadra & Ordina</span>
+          </div>
+          <div style={{ fontSize:11, color:C.muted, marginBottom:12, lineHeight:1.6 }}>Inserisci codice capo per riassortimento immediato.</div>
+          <div style={{ display:"flex", gap:8 }}>
+            <input value={scanVal} onChange={e => setScanVal(e.target.value)} onKeyDown={e => e.key==="Enter" && onScan(scanVal)}
+              placeholder="es. SKU-4821"
+              style={{ flex:1, background:"rgba(237,233,227,0.6)", border:"1px solid rgba(200,191,176,0.5)", borderRadius:8, padding:"8px 12px", fontSize:11, color:C.ink, fontFamily:C.sans, outline:"none" }} />
+            <button onClick={() => onScan(scanVal)}
+              style={{ background:"#6B5535", color:"#F5F2EE", border:"none", borderRadius:8, padding:"8px 14px", fontSize:10, fontWeight:600, letterSpacing:1, cursor:"pointer" }}>
+              CERCA
+            </button>
+          </div>
+          {scanResult && <div style={{ marginTop:10, fontSize:10, color:"#3C5A4B", background:"rgba(92,122,107,0.08)", borderRadius:8, padding:"10px 12px", lineHeight:1.7 }}>✓ {scanResult}</div>}
+        </Card>
+
+        {/* Inquadra Fattura */}
+        <Card>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+            <Tag label="OCR" color="#5C6B8B" />
+            <span style={{ fontFamily:C.serif, fontSize:15, color:C.ink }}>Inquadra Fattura</span>
+          </div>
+          <div style={{ fontSize:11, color:C.muted, marginBottom:12, lineHeight:1.6 }}>Scatto e caricamento automatico via OCR + AI.</div>
+          <button onClick={onInvoice}
+            style={{ width:"100%", background:"rgba(92,107,139,0.1)", border:"1px dashed rgba(92,107,139,0.4)", borderRadius:10, padding:"16px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:6, transition:"background 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background="rgba(92,107,139,0.18)"}
+            onMouseLeave={e => e.currentTarget.style.background="rgba(92,107,139,0.1)"}>
+            <span style={{ fontSize:20 }}>📄</span>
+            <span style={{ fontSize:10, color:"#5C6B8B", letterSpacing:1, fontWeight:600 }}>SCATTA O CARICA FATTURA</span>
+          </button>
+          {invoiceResult && <div style={{ marginTop:10, fontSize:10, color:"#3C4B6B", background:"rgba(92,107,139,0.08)", borderRadius:8, padding:"10px 12px", lineHeight:1.7 }}>✓ {invoiceResult}</div>}
+        </Card>
+
+        {/* Voice rapido */}
+        <Card>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+            <Tag label="VOICE" color="#7A5C5C" />
+            <span style={{ fontFamily:C.serif, fontSize:15, color:C.ink }}>Comando Vocale Rapido</span>
+          </div>
+          <div style={{ fontSize:11, color:C.muted, marginBottom:12, lineHeight:1.6 }}>Query CEO preimpostate — clicca per eseguire.</div>
+          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+            {VOICE_Q.map((q,i) => (
+              <button key={i}
+                style={{ background:"rgba(122,92,92,0.07)", border:"1px solid rgba(122,92,92,0.15)", borderRadius:8, padding:"8px 12px", fontSize:10, color:"#7A5C5C", cursor:"pointer", textAlign:"left", letterSpacing:0.3, transition:"background 0.15s" }}
+                onMouseEnter={e => e.currentTarget.style.background="rgba(122,92,92,0.15)"}
+                onMouseLeave={e => e.currentTarget.style.background="rgba(122,92,92,0.07)"}>
+                ▷ {q}
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        {/* Alert */}
+        <Card>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
+            <Tag label="ALERT" color="#8B5C5C" />
+            <span style={{ fontFamily:C.serif, fontSize:15, color:C.ink }}>Notifiche Critiche</span>
+          </div>
+          {ALERTS.map((a,i) => (
+            <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:10, paddingBottom:i<3?10:0, borderBottom:i<3?"1px solid rgba(200,191,176,0.2)":"none", marginBottom:i<3?10:0 }}>
+              <div style={{ width:6, height:6, borderRadius:"50%", background:a.color, marginTop:3, flexShrink:0 }} />
+              <div style={{ flex:1, fontSize:10, color:"#5A5048", lineHeight:1.5 }}>{a.text}</div>
+              <div style={{ fontSize:9, color:C.label, fontFamily:"monospace", flexShrink:0 }}>{a.time}</div>
+            </div>
+          ))}
+        </Card>
+
+      </div>
+    </div>
+  );
+}
+
+function ModuleView({ mod }) {
+  const [voiceAnswer, setVoiceAnswer] = useState("");
+  const [voiceLoading, setVoiceLoading] = useState(false);
+  const ANSWERS = {
+    "Mostrami i trend competitor oggi":"Zara: 3 sold-out — Blazer Mauve, Wide Leg Linen, Shirt Oversized. H&M: low-stock su 7 articoli. Suggerisco produzione SKU #MV-2024.",
+    "Venduto del codice X questa settimana?":"SKU X-4821 — Settimana: 3.241 pz / €162.050. Giacenza: 120 pz. Esaurimento: 2.3 giorni. ⚠ Riordino consigliato.",
+    "Chi sono i top clienti del mese?":"① Boutique Milano €84.200 (+22%) ② Moda Sud Palermo €61.800 (+8%) ③ Fashion Hub Torino €58.400 (+31%). Tutti resi <2%.",
+    "Quali SKU sono quasi esauriti?":"⚠ Blazer Mauve S/M (48h), Cargo Linen 38 (36h), Midi Dress Cream (72h), Shirt XS (24h), Trench Camel 42 (60h).",
+  };
+  const askVoice = async q => {
+    setVoiceLoading(true); setVoiceAnswer("");
+    await new Promise(r => setTimeout(r, 750));
+    setVoiceAnswer(ANSWERS[q] || "Elaborazione completata.");
+    setVoiceLoading(false);
+  };
+
+  const cols = mod.cards.length === 3 ? "repeat(3,1fr)" : "repeat(2,1fr)";
+
+  return (
+    <div style={{ animation:"fadeUp 0.3s ease" }}>
+      <div style={{ marginBottom:28 }}>
+        <div style={{ display:"flex", alignItems:"baseline", gap:14, marginBottom:6 }}>
+          <span style={{ fontFamily:C.serif, fontSize:52, fontWeight:300, color:mod.color, lineHeight:1, opacity:0.35 }}>{mod.num}</span>
+          <div>
+            <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:5 }}>{mod.sub.toUpperCase()} · {mod.cards.length} FUNZIONI</div>
+            <h1 style={{ fontFamily:C.serif, fontSize:24, fontWeight:400, color:C.ink }}>{mod.label}</h1>
+          </div>
+        </div>
+        <div style={{ height:1, background:`linear-gradient(90deg,${mod.color}55,transparent)`, marginTop:10 }} />
+      </div>
+
+      <div style={{ display:"grid", gridTemplateColumns:cols, gap:16, marginBottom:16 }}>
+        {mod.cards.map((c,i) => (
+          <Card key={i}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+              <Tag label={c.tag} color={mod.color} />
+              <StatusDot status={c.status} />
+            </div>
+            <div style={{ fontFamily:C.serif, fontSize:16, color:C.ink, marginBottom:8, lineHeight:1.3 }}>{c.title}</div>
+            <div style={{ fontSize:11, color:C.muted, lineHeight:1.7 }}>{c.desc}</div>
+            <Metric value={c.metric} unit={c.unit} trend={c.trend} color={mod.color} />
+          </Card>
+        ))}
+      </div>
+
+      {mod.id === "governance" && (
+        <Card style={{ marginBottom:16 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:18 }}>
+            <span style={{ fontFamily:C.serif, fontSize:17, fontWeight:300, color:"#7A5C5C" }}>Voice Command</span>
+            <div style={{ flex:1, height:1, background:"rgba(200,191,176,0.35)" }} />
+            <span style={{ fontSize:8, color:C.label, letterSpacing:2 }}>AI · BETA</span>
+          </div>
+          <SectionLabel>INTERROGA IL SISTEMA</SectionLabel>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:16 }}>
+            {Object.keys(ANSWERS).map((q,i) => (
+              <button key={i} onClick={() => askVoice(q)}
+                style={{ background:"transparent", border:"1px solid #D5CEC8", borderRadius:0, padding:"7px 12px", fontSize:10, color:C.muted, cursor:"pointer", fontFamily:C.sans, transition:"all 0.18s" }}
+                onMouseEnter={e => { e.target.style.borderColor="#7A5C5C"; e.target.style.color="#7A5C5C"; }}
+                onMouseLeave={e => { e.target.style.borderColor="#D5CEC8"; e.target.style.color=C.muted; }}>
+                "{q}"
+              </button>
+            ))}
+          </div>
+          {voiceLoading && <div style={{ fontSize:10, color:C.label, letterSpacing:2 }}>· · · elaborazione</div>}
+          {voiceAnswer && !voiceLoading && (
+            <div style={{ borderLeft:"2px solid #7A5C5C", paddingLeft:16, fontSize:11, color:"#5A5048", lineHeight:1.8 }}>
+              <div style={{ fontSize:8, color:"#7A5C5C", letterSpacing:2, marginBottom:8 }}>RISPOSTA AI</div>
+              {voiceAnswer}
+            </div>
+          )}
+        </Card>
+      )}
+
+      <div style={{ ...glass({ borderRadius:12 }), display:"flex", alignItems:"center", gap:32, padding:"18px 24px" }}>
+        <span style={{ fontSize:8, color:C.label, letterSpacing:2, whiteSpace:"nowrap" }}>PERFORMANCE MODULO</span>
+        <div style={{ flex:1, height:1, background:"rgba(200,191,176,0.3)" }} />
+        {[["Uptime","99.9%"],["Latenza","1.4s"],["Dati/giorno","2.1M"],["AI Accuracy","97.2%"]].map(([l,v],i) => (
+          <div key={i} style={{ textAlign:"center" }}>
+            <div style={{ fontFamily:C.mono, fontSize:15, fontWeight:500, color:mod.color }}>{v}</div>
+            <div style={{ fontSize:8, color:C.label, marginTop:4, letterSpacing:1 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+
+const MESI = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+
+const FATTURE = [
+  {id:"F-2026-0312",data:"07/03/2026",cliente:"Boutique Milano Centro",importo:8420,mese:"Mar",anno:2026},
+  {id:"F-2026-0311",data:"06/03/2026",cliente:"Moda Sud Palermo",importo:6180,mese:"Mar",anno:2026},
+  {id:"F-2026-0310",data:"05/03/2026",cliente:"Fashion Hub Torino",importo:5840,mese:"Mar",anno:2026},
+  {id:"F-2026-0309",data:"04/03/2026",cliente:"Elegance Roma",importo:4200,mese:"Mar",anno:2026},
+  {id:"F-2026-0308",data:"03/03/2026",cliente:"Boutique Milano Centro",importo:7100,mese:"Mar",anno:2026},
+  {id:"F-2026-0307",data:"01/03/2026",cliente:"Nord Style Venezia",importo:3900,mese:"Mar",anno:2026},
+  {id:"F-2026-0245",data:"28/02/2026",cliente:"Fashion Hub Torino",importo:9200,mese:"Feb",anno:2026},
+  {id:"F-2026-0244",data:"25/02/2026",cliente:"Boutique Milano Centro",importo:11400,mese:"Feb",anno:2026},
+  {id:"F-2026-0180",data:"31/01/2026",cliente:"Elegance Roma",importo:7800,mese:"Gen",anno:2026},
+  {id:"F-2026-0179",data:"28/01/2026",cliente:"Moda Sud Palermo",importo:5200,mese:"Gen",anno:2026},
+];
+
+const MENSILI_2026 = [
+  {m:"Gen",v:312000},{m:"Feb",v:287000},{m:"Mar",v:284700},
+  {m:"Apr",v:0},{m:"Mag",v:0},{m:"Giu",v:0},
+  {m:"Lug",v:0},{m:"Ago",v:0},{m:"Set",v:0},
+  {m:"Ott",v:0},{m:"Nov",v:0},{m:"Dic",v:0},
+];
+
+const ANNUALI = [
+  {y:"2021",v:1240000},{y:"2022",v:1580000},{y:"2023",v:1920000},{y:"2024",v:2340000},{y:"2025",v:2810000},{y:"2026",v:883700},
+];
+
+function BarChart({ data, valueKey, labelKey, color, prefix="" }) {
+  const max = Math.max(...data.map(d => d[valueKey])) || 1;
+  const h = 120;
+  return (
+    <div style={{ display:"flex", alignItems:"flex-end", gap:4, height:h+28 }}>
+      {data.map((d,i) => {
+        const barH = d[valueKey] ? Math.max(4, (d[valueKey]/max)*h) : 0;
+        return (
+          <div key={i} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-end", height:h+28 }}>
+            <div style={{ fontSize:8, color:C.muted, marginBottom:3, fontFamily:C.mono }}>
+              {d[valueKey] ? `${prefix}${d[valueKey]>=1000?(d[valueKey]/1000).toFixed(0)+"K":d[valueKey]}` : ""}
+            </div>
+            <div style={{ width:"100%", height:barH, background:barH?`${color}CC`:"rgba(200,191,176,0.2)", borderRadius:"3px 3px 0 0", transition:"height 0.4s ease" }} />
+            <div style={{ fontSize:8, color:C.label, marginTop:4, letterSpacing:0.5 }}>{d[labelKey]}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function StoricoView() {
+  const [annoFilter, setAnnoFilter] = useState(2026);
+
+  const totMese = FATTURE.filter(f=>f.mese==="Mar"&&f.anno===2026).reduce((s,f)=>s+f.importo,0);
+  const clientiMap = {};
+  FATTURE.forEach(f => { clientiMap[f.cliente] = (clientiMap[f.cliente]||0)+f.importo; });
+  const miglioreCliente = Object.entries(clientiMap).sort((a,b)=>b[1]-a[1])[0];
+
+  const giorni = {};
+  FATTURE.forEach(f => { giorni[f.data] = (giorni[f.data]||0)+f.importo; });
+  const migliorGiorno = Object.entries(giorni).sort((a,b)=>b[1]-a[1])[0];
+
+  const mesiMap = {};
+  FATTURE.forEach(f => { const k=`${f.mese} ${f.anno}`; mesiMap[k]=(mesiMap[k]||0)+f.importo; });
+  const migliorMese = Object.entries(mesiMap).sort((a,b)=>b[1]-a[1])[0];
+
+  const anniMap = {};
+  ANNUALI.forEach(a => { anniMap[a.y]=a.v; });
+  const migliorAnno = Object.entries(anniMap).sort((a,b)=>b[1]-a[1])[0];
+
+  const RECORDS = [
+    {label:"Cliente Migliore",  value:miglioreCliente[0],           sub:`€${miglioreCliente[1].toLocaleString("it-IT")}`,     icon:"🏆"},
+    {label:"Giorno Migliore",   value:migliorGiorno[0],             sub:`€${migliorGiorno[1].toLocaleString("it-IT")}`,       icon:"📅"},
+    {label:"Mese Migliore",     value:migliorMese[0],               sub:`€${migliorMese[1].toLocaleString("it-IT")}`,         icon:"📊"},
+    {label:"Anno Migliore",     value:migliorAnno[0],               sub:`€${migliorAnno[1].toLocaleString("it-IT")}`,         icon:"🎯"},
+  ];
+
+  return (
+    <div style={{ animation:"fadeUp 0.3s ease" }}>
+      <div style={{ marginBottom:28 }}>
+        <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:6 }}>FINANCE · STORICO</div>
+        <h1 style={{ fontFamily:C.serif, fontSize:26, fontWeight:400, color:C.ink, marginBottom:12 }}>Storico Fatturato</h1>
+        <div style={{ height:1, background:"linear-gradient(90deg,#5C6B8B55,transparent)" }} />
+      </div>
+
+      {/* RECORDS */}
+      <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:14 }}>RECORD STORICI</div>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:28 }}>
+        {RECORDS.map((r,i) => (
+          <Card key={i} style={{ padding:"18px 20px", textAlign:"center" }}>
+            <div style={{ fontSize:22, marginBottom:8 }}>{r.icon}</div>
+            <div style={{ fontSize:8, color:C.label, letterSpacing:2, marginBottom:6 }}>{r.label.toUpperCase()}</div>
+            <div style={{ fontFamily:C.serif, fontSize:15, fontWeight:500, color:C.ink, marginBottom:4, lineHeight:1.3 }}>{r.value}</div>
+            <div style={{ fontFamily:C.mono, fontSize:13, fontWeight:600, color:"#5C6B8B" }}>{r.sub}</div>
+          </Card>
+        ))}
+      </div>
+
+      {/* GRAFICI */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:24 }}>
+        <Card style={{ padding:"22px 24px" }}>
+          <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:16 }}>FATTURATO MENSILE 2026</div>
+          <BarChart data={MENSILI_2026} valueKey="v" labelKey="m" color="#5C6B8B" prefix="€" />
+        </Card>
+        <Card style={{ padding:"22px 24px" }}>
+          <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:16 }}>ANDAMENTO ANNUALE</div>
+          <BarChart data={ANNUALI} valueKey="v" labelKey="y" color="#8B7355" prefix="€" />
+        </Card>
+      </div>
+
+      {/* TABELLA FATTURE */}
+      <Card style={{ padding:"22px 24px" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+          <div style={{ fontSize:8, color:C.label, letterSpacing:3 }}>FATTURE RECENTI</div>
+          <div style={{ display:"flex", gap:8 }}>
+            {[2026,2025,2024].map(y => (
+              <button key={y} onClick={() => setAnnoFilter(y)}
+                style={{ background:annoFilter===y?"#5C6B8B":"transparent", color:annoFilter===y?"#F5F2EE":C.muted, border:`1px solid ${annoFilter===y?"#5C6B8B":"rgba(200,191,176,0.5)"}`, borderRadius:6, padding:"4px 10px", fontSize:10, cursor:"pointer", transition:"all 0.2s" }}>
+                {y}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"140px 1fr 1fr auto", gap:0 }}>
+          {["N. FATTURA","DATA · CLIENTE","MESE","IMPORTO"].map((h,i) => (
+            <div key={i} style={{ fontSize:8, color:C.label, letterSpacing:2, padding:"6px 12px", borderBottom:"1px solid rgba(200,191,176,0.35)", background:"rgba(237,233,227,0.4)" }}>{h}</div>
+          ))}
+          {FATTURE.filter(f=>f.anno===annoFilter).map((f,i) => (
+            <>
+              <div key={`a${i}`} style={{ fontFamily:C.mono, fontSize:10, color:"#5C6B8B", padding:"11px 12px", borderBottom:"1px solid rgba(200,191,176,0.15)" }}>{f.id}</div>
+              <div key={`b${i}`} style={{ fontSize:11, padding:"11px 12px", borderBottom:"1px solid rgba(200,191,176,0.15)" }}>
+                <div style={{ color:C.ink }}>{f.cliente}</div>
+                <div style={{ fontSize:9, color:C.muted, marginTop:2 }}>{f.data}</div>
+              </div>
+              <div key={`c${i}`} style={{ fontSize:10, color:C.muted, padding:"11px 12px", borderBottom:"1px solid rgba(200,191,176,0.15)" }}>{f.mese} {f.anno}</div>
+              <div key={`d${i}`} style={{ fontFamily:C.mono, fontSize:12, fontWeight:600, color:C.ink, padding:"11px 12px", borderBottom:"1px solid rgba(200,191,176,0.15)", textAlign:"right" }}>
+                €{f.importo.toLocaleString("it-IT")}
+              </div>
+            </>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+
+const SAMPLE_ORDERS = [
+  { input:"Voglio 10 blazer mauve taglia 42 e 5 cargo beige taglia 38", parsed:[
+    {sku:"SAI-BM-42",desc:"Blazer Mauve Slim",col:"Mauve",tg:"42",qty:10,prezzo:89.90},
+    {sku:"SAI-CL-38",desc:"Cargo Linen Sabbia",col:"Beige",tg:"38",qty:5,prezzo:74.90},
+  ]},
+  { input:"Mandami 3 trench camel 40, 8 midi dress ivory S e 12 shirt ecru M", parsed:[
+    {sku:"SAI-TC-40",desc:"Trench Camel Classic",col:"Camel",tg:"40",qty:3,prezzo:149.90},
+    {sku:"SAI-MD-S", desc:"Midi Dress Ivory",    col:"Ivory",tg:"S", qty:8,prezzo:99.90},
+    {sku:"SAI-SE-M", desc:"Shirt Oversize Ecru", col:"Ecru", tg:"M", qty:12,prezzo:59.90},
+  ]},
+  { input:"Riordino solito: 20 pezzi del blazer nero che va sempre, mix taglie 40/42/44", parsed:[
+    {sku:"SAI-BN-40",desc:"Blazer Essential Nero",col:"Nero",tg:"40",qty:7,prezzo:89.90},
+    {sku:"SAI-BN-42",desc:"Blazer Essential Nero",col:"Nero",tg:"42",qty:8,prezzo:89.90},
+    {sku:"SAI-BN-44",desc:"Blazer Essential Nero",col:"Nero",tg:"44",qty:5,prezzo:89.90},
+  ]},
+];
+
+function AICommerceView() {
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState([
+    { role:"ai", text:"Ciao! Sono l'assistente Saiph. Posso aiutarti con il catalogo, la disponibilità dei capi o creare un ordine. Come posso aiutarti?" }
+  ]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [voiceInput, setVoiceInput] = useState("");
+  const [parsedOrder, setParsedOrder] = useState(null);
+  const [isParsing, setIsParsing] = useState(false);
+  const [selectedSample, setSelectedSample] = useState(null);
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
+
+  const AI_RESPONSES = {
+    default: "Ho capito! Sto verificando la disponibilità nel catalogo...",
+    blazer: "Il Blazer Mauve Slim (SAI-2024-BM) è disponibile in taglie 38–46. Prezzo: €89,90. Vuoi aggiungerlo all'ordine?",
+    disponibilità: "Certo! Dimmi quale capo o codice SKU vuoi verificare e ti rispondo subito con stock aggiornato.",
+    ordine: "Perfetto, creo l'ordine. Dimmi pure: nome capo, colore, taglia e quantità — anche in modo naturale va benissimo!",
+    prezzi: "Ecco il listino aggiornato: Blazer €89,90 · Trench €149,90 · Midi Dress €99,90 · Cargo €74,90 · Shirt €59,90",
+  };
+
+  const sendChat = async () => {
+    if (!chatInput.trim()) return;
+    const userMsg = chatInput;
+    setChatInput("");
+    setChatMessages(prev => [...prev, { role:"user", text:userMsg }]);
+    setIsTyping(true);
+    await new Promise(r => setTimeout(r, 900));
+    const lower = userMsg.toLowerCase();
+    let reply = AI_RESPONSES.default;
+    if (lower.includes("blazer") || lower.includes("mauve")) reply = AI_RESPONSES.blazer;
+    else if (lower.includes("disponib") || lower.includes("stock")) reply = AI_RESPONSES.disponibilità;
+    else if (lower.includes("ordine") || lower.includes("ordinare") || lower.includes("voglio")) reply = AI_RESPONSES.ordine;
+    else if (lower.includes("prezz") || lower.includes("listino") || lower.includes("costo")) reply = AI_RESPONSES.prezzi;
+    setChatMessages(prev => [...prev, { role:"ai", text:reply }]);
+    setIsTyping(false);
+  };
+
+  const parseVoiceOrder = async (text) => {
+    if (!text.trim()) return;
+    setIsParsing(true); setParsedOrder(null); setOrderConfirmed(false);
+    await new Promise(r => setTimeout(r, 1200));
+    const match = SAMPLE_ORDERS.find(s => s.input === text) || SAMPLE_ORDERS[0];
+    setParsedOrder(match.parsed);
+    setIsParsing(false);
+  };
+
+  const totale = parsedOrder ? parsedOrder.reduce((s,r) => s + r.qty * r.prezzo, 0) : 0;
+
+  return (
+    <div style={{ animation:"fadeUp 0.3s ease" }}>
+      <div style={{ marginBottom:28 }}>
+        <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:6 }}>MODULO VII · IN SVILUPPO</div>
+        <h1 style={{ fontFamily:C.serif, fontSize:26, fontWeight:400, color:C.ink, marginBottom:6 }}>AI Commerce Layer</h1>
+        <p style={{ fontSize:11, color:C.muted, lineHeight:1.7, maxWidth:620 }}>
+          Il cliente ordina come parla — in chat, con la voce, su WhatsApp. L'AI struttura automaticamente l'ordine con SKU, quantità, colori e taglie. Zero telefonate, zero errori manuali.
+        </p>
+        <div style={{ height:1, background:"linear-gradient(90deg,#4B7A8B55,transparent)", marginTop:14 }} />
+      </div>
+
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
+
+        {/* LEFT — Chatbot Demo */}
+        <div>
+          <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:14 }}>CHATBOT SITO / APP — DEMO</div>
+          <Card style={{ padding:0, overflow:"hidden", display:"flex", flexDirection:"column", height:480 }}>
+            {/* Chat header */}
+            <div style={{ padding:"14px 18px", background:"#4B7A8B", display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ width:32, height:32, borderRadius:"50%", background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:14 }}>✦</div>
+              <div>
+                <div style={{ fontSize:11, fontWeight:600, color:"#fff", letterSpacing:0.3 }}>Assistente Saiph</div>
+                <div style={{ fontSize:9, color:"rgba(255,255,255,0.7)" }}>Online · risponde in &lt;1s</div>
+              </div>
+              <div style={{ marginLeft:"auto", width:8, height:8, borderRadius:"50%", background:"#7AFFB2", animation:"pulse 2s infinite" }} />
+            </div>
+
+            {/* Messages */}
+            <div style={{ flex:1, overflowY:"auto", padding:"16px", display:"flex", flexDirection:"column", gap:10, background:"rgba(248,245,240,0.4)" }}>
+              {chatMessages.map((m,i) => (
+                <div key={i} style={{ display:"flex", justifyContent:m.role==="user"?"flex-end":"flex-start" }}>
+                  <div style={{
+                    maxWidth:"78%", padding:"10px 14px", borderRadius:m.role==="user"?"14px 14px 2px 14px":"14px 14px 14px 2px",
+                    background:m.role==="user"?"#4B7A8B":"rgba(255,252,248,0.9)",
+                    color:m.role==="user"?"#fff":C.ink, fontSize:11, lineHeight:1.6,
+                    boxShadow:"0 1px 6px rgba(0,0,0,0.06)"
+                  }}>
+                    {m.text}
+                  </div>
+                </div>
+              ))}
+              {isTyping && (
+                <div style={{ display:"flex", gap:4, padding:"10px 14px", background:"rgba(255,252,248,0.9)", borderRadius:"14px 14px 14px 2px", width:"fit-content" }}>
+                  {[0,1,2].map(i => <div key={i} style={{ width:6, height:6, borderRadius:"50%", background:"#C8BFB0", animation:`pulse 1.2s ${i*0.2}s infinite` }} />)}
+                </div>
+              )}
+            </div>
+
+            {/* Quick prompts */}
+            <div style={{ padding:"8px 12px", borderTop:"1px solid rgba(200,191,176,0.3)", display:"flex", gap:6, flexWrap:"wrap", background:"rgba(237,233,227,0.4)" }}>
+              {["Disponibilità blazer","Listino prezzi","Voglio fare un ordine"].map((q,i) => (
+                <button key={i} onClick={() => { setChatInput(q); }}
+                  style={{ fontSize:9, padding:"4px 10px", background:"transparent", border:"1px solid rgba(75,122,139,0.3)", borderRadius:20, color:"#4B7A8B", cursor:"pointer", letterSpacing:0.3 }}>
+                  {q}
+                </button>
+              ))}
+            </div>
+
+            {/* Input */}
+            <div style={{ padding:"12px", borderTop:"1px solid rgba(200,191,176,0.3)", display:"flex", gap:8 }}>
+              <input value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key==="Enter" && sendChat()}
+                placeholder="Scrivi un messaggio..."
+                style={{ flex:1, background:"rgba(237,233,227,0.6)", border:"1px solid rgba(200,191,176,0.4)", borderRadius:20, padding:"8px 14px", fontSize:11, color:C.ink, fontFamily:C.sans, outline:"none" }} />
+              <button onClick={sendChat}
+                style={{ width:36, height:36, borderRadius:"50%", background:"#4B7A8B", border:"none", cursor:"pointer", fontSize:14, color:"#fff", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                ↑
+              </button>
+            </div>
+          </Card>
+        </div>
+
+        {/* RIGHT — Voice Order Parser */}
+        <div>
+          <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:14 }}>ORDINE VOCALE — PARSER AI</div>
+          <Card style={{ padding:"20px 22px", marginBottom:12 }}>
+            <div style={{ fontSize:11, color:C.muted, marginBottom:14, lineHeight:1.6 }}>
+              Seleziona un esempio di ordine vocale e vedi come l'AI lo struttura automaticamente.
+            </div>
+
+            {/* Sample phrases */}
+            <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:16 }}>
+              {SAMPLE_ORDERS.map((s,i) => (
+                <button key={i} onClick={() => { setSelectedSample(s.input); setVoiceInput(s.input); setParsedOrder(null); setOrderConfirmed(false); }}
+                  style={{ background:selectedSample===s.input?"rgba(75,122,139,0.12)":"rgba(237,233,227,0.5)", border:`1px solid ${selectedSample===s.input?"rgba(75,122,139,0.4)":"rgba(200,191,176,0.35)"}`, borderRadius:10, padding:"10px 14px", cursor:"pointer", textAlign:"left", transition:"all 0.18s" }}>
+                  <div style={{ fontSize:9, color:"#4B7A8B", letterSpacing:1, marginBottom:4 }}>🎙 ESEMPIO {i+1}</div>
+                  <div style={{ fontSize:11, color:C.ink, fontStyle:"italic", lineHeight:1.5 }}>"{s.input}"</div>
+                </button>
+              ))}
+            </div>
+
+            <button onClick={() => parseVoiceOrder(voiceInput)} disabled={!voiceInput}
+              style={{ width:"100%", background:voiceInput?"#4B7A8B":"rgba(200,191,176,0.3)", color:voiceInput?"#fff":C.label, border:"none", borderRadius:10, padding:"11px", fontSize:11, fontWeight:600, letterSpacing:1, cursor:voiceInput?"pointer":"default", transition:"all 0.2s" }}>
+              {isParsing ? "· · · PARSING IN CORSO" : "▶ CONVERTI IN ORDINE STRUTTURATO"}
+            </button>
+          </Card>
+
+          {/* Parsed order result */}
+          {parsedOrder && !isParsing && (
+            <Card style={{ padding:"20px 22px" }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+                <div style={{ fontSize:8, color:"#4B7A8B", letterSpacing:3 }}>ORDINE STRUTTURATO · PRONTO</div>
+                <span style={{ fontSize:8, background:"rgba(75,122,139,0.12)", color:"#4B7A8B", padding:"3px 8px", borderRadius:4 }}>NLP ✓</span>
+              </div>
+
+              <div style={{ display:"grid", gridTemplateColumns:"auto 1fr auto auto auto", gap:0, marginBottom:14 }}>
+                {["SKU","DESCRIZIONE","COL.","TG.","QTÀ"].map((h,i) => (
+                  <div key={i} style={{ fontSize:7, color:C.label, letterSpacing:1.5, padding:"5px 8px", borderBottom:"1px solid rgba(200,191,176,0.35)", background:"rgba(237,233,227,0.4)" }}>{h}</div>
+                ))}
+                {parsedOrder.map((row,i) => (
+                  <>
+                    <div key={`a${i}`} style={{ fontFamily:C.mono, fontSize:9, color:"#4B7A8B", padding:"9px 8px", borderBottom:"1px solid rgba(200,191,176,0.15)" }}>{row.sku}</div>
+                    <div key={`b${i}`} style={{ fontSize:10, color:C.ink, padding:"9px 8px", borderBottom:"1px solid rgba(200,191,176,0.15)" }}>{row.desc}</div>
+                    <div key={`c${i}`} style={{ fontSize:10, color:C.muted, padding:"9px 8px", borderBottom:"1px solid rgba(200,191,176,0.15)" }}>{row.col}</div>
+                    <div key={`d${i}`} style={{ fontSize:10, color:C.muted, padding:"9px 8px", borderBottom:"1px solid rgba(200,191,176,0.15)", textAlign:"center" }}>{row.tg}</div>
+                    <div key={`e${i}`} style={{ fontFamily:C.mono, fontSize:11, fontWeight:600, color:C.ink, padding:"9px 8px", borderBottom:"1px solid rgba(200,191,176,0.15)", textAlign:"right" }}>×{row.qty}</div>
+                  </>
+                ))}
+              </div>
+
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", paddingTop:10, borderTop:"1px solid rgba(200,191,176,0.3)" }}>
+                <div>
+                  <div style={{ fontSize:9, color:C.label, marginBottom:2 }}>TOTALE ORDINE</div>
+                  <div style={{ fontFamily:C.mono, fontSize:18, fontWeight:600, color:"#4B7A8B" }}>€{totale.toLocaleString("it-IT",{minimumFractionDigits:2})}</div>
+                </div>
+                {!orderConfirmed ? (
+                  <button onClick={() => setOrderConfirmed(true)}
+                    style={{ background:"#4B7A8B", color:"#fff", border:"none", borderRadius:10, padding:"10px 20px", fontSize:11, fontWeight:600, cursor:"pointer", letterSpacing:0.5 }}>
+                    CONFERMA ORDINE →
+                  </button>
+                ) : (
+                  <div style={{ fontSize:11, color:"#3C5A4B", background:"rgba(92,122,107,0.1)", borderRadius:8, padding:"10px 16px" }}>
+                    ✓ Ordine inviato al gestionale
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
+        </div>
+
+      </div>
+
+      {/* Bottom info strip */}
+      <div style={{ ...glass({ borderRadius:12 }), padding:"16px 24px", marginTop:16, display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:0 }}>
+        {[
+          {icon:"💬", label:"Chatbot Web/App",   sub:"Widget JS · React Native SDK"},
+          {icon:"🎙", label:"Voice-to-Order",    sub:"Whisper API · trascrizione real-time"},
+          {icon:"🤖", label:"NLP Parser",         sub:"GPT-4o · accuracy >97%"},
+          {icon:"📲", label:"WhatsApp & Email",   sub:"Twilio · SendGrid integration"},
+        ].map((item,i) => (
+          <div key={i} style={{ padding:"8px 16px", borderRight:i<3?"1px solid rgba(200,191,176,0.25)":"none", textAlign:"center" }}>
+            <div style={{ fontSize:18, marginBottom:6 }}>{item.icon}</div>
+            <div style={{ fontSize:10, fontWeight:600, color:C.ink, marginBottom:3 }}>{item.label}</div>
+            <div style={{ fontSize:9, color:C.muted }}>{item.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [page, setPage] = useState("dashboard");
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [time, setTime] = useState(new Date());
+  const [scanResult, setScanResult] = useState("");
+  const [invoiceResult, setInvoiceResult] = useState("");
+  useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
+
+  const handleScan = val => {
+    if (!val.trim()) return;
+    setScanResult(`SKU ${val.toUpperCase()} — Disponibile: 234 pz · Colori: Nero, Bianco, Mauve · Inserito in carrello.`);
+  };
+  const handleInvoice = () => setInvoiceResult("Fornitore: Tessuti Prato S.r.l. · Importo: €14.820,00 · Data: 07/03/2026 · 4 codici capo estratti · Caricato in contabilità.");
+
+  return (
+    <div style={{ minHeight:"100vh", background:C.bg, color:C.ink, fontFamily:C.sans }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0}
+        ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#EDE9E3}::-webkit-scrollbar-thumb{background:#C8BFB0}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+        input::placeholder{color:#C8BFB0}
+      `}</style>
+
+      {/* HEADER */}
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 36px", height:64, borderBottom:"1px solid rgba(200,191,176,0.35)", background:"rgba(248,245,240,0.85)", backdropFilter:"blur(8px)" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:20 }}>
+          <img src={LOGO} alt="SAIPH" style={{ height:40, objectFit:"contain" }} />
+          <div style={{ width:1, height:20, background:"rgba(200,191,176,0.5)" }} />
+          <span style={{ fontSize:9, color:C.label, letterSpacing:3 }}>CRM 4.0 · INTELLIGENCE PLATFORM</span>
+        </div>
+        <div style={{ display:"flex", alignItems:"center", gap:18 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+            <div style={{ width:5, height:5, borderRadius:"50%", background:"#5C7A5C", animation:"pulse 2s infinite" }} />
+            <span style={{ fontSize:9, color:C.label, letterSpacing:2 }}>SISTEMA LIVE</span>
+          </div>
+          <div style={{ width:1, height:16, background:"rgba(200,191,176,0.4)" }} />
+          <span style={{ fontSize:10, color:"#8B7355", fontFamily:"monospace", letterSpacing:1 }}>{time.toLocaleTimeString("it-IT")}</span>
+        </div>
+      </div>
+
+      {/* KPI BAR */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", borderBottom:"1px solid rgba(200,191,176,0.35)", background:"rgba(237,233,227,0.6)" }}>
+        {[
+          {l:`FATTURATO ${new Date().toLocaleString("it-IT",{month:"long"}).toUpperCase()}`, v:"€284.7K", s:"+18.4% vs LY", click:true},
+          {l:"ORDINI ATTIVI",  v:"3.847",   s:"↑ 234 nuovi",       click:false},
+          {l:"ALERT CRITICI",  v:"23",       s:"↓ −8 vs ieri",     click:false},
+          {l:"TREND VIRALI",   v:"7",        s:"Mauve · Linen · Wide", click:false},
+          {l:"UPTIME",         v:"99.97%",   s:"Tutti i sistemi OK", click:false},
+        ].map((k,i) => (
+          <div key={i} onClick={k.click ? () => setPage("storico") : undefined}
+            style={{ padding:"13px 26px", borderRight:i<4?"1px solid rgba(200,191,176,0.3)":"none", cursor:k.click?"pointer":"default", transition:"background 0.2s" }}
+            onMouseEnter={e => { if(k.click) e.currentTarget.style.background="rgba(200,191,176,0.2)"; }}
+            onMouseLeave={e => { if(k.click) e.currentTarget.style.background="transparent"; }}>
+            <div style={{ display:"flex", alignItems:"center", gap:5 }}>
+              <div style={{ fontSize:8, color:k.click?"#8B7355":C.label, letterSpacing:2, marginBottom:5 }}>{k.l}</div>
+              {k.click && <div style={{ fontSize:7, color:"#8B7355", marginBottom:5, letterSpacing:1 }}>↗ STORICO</div>}
+            </div>
+            <div style={{ fontFamily:C.mono, fontSize:19, fontWeight:500, color:C.ink, letterSpacing:-0.5 }}>{k.v}</div>
+            <div style={{ fontSize:9, color:C.muted, marginTop:3 }}>{k.s}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display:"flex", height:"calc(100vh - 115px)" }}>
+        {/* SIDEBAR */}
+        <div style={{ width:245, borderRight:"1px solid rgba(200,191,176,0.3)", background:"rgba(237,233,227,0.5)", backdropFilter:"blur(8px)", display:"flex", flexDirection:"column", padding:"20px 0", flexShrink:0, overflowY:"auto" }}>
+
+          {/* Dashboard button */}
+          <button onClick={() => setPage("dashboard")}
+            style={{ background:page==="dashboard"?"rgba(255,252,248,0.85)":"transparent", border:"none", borderLeft:`2px solid ${page==="dashboard"?"#8B7355":"transparent"}`, padding:"13px 22px", cursor:"pointer", textAlign:"left", transition:"all 0.2s" }}
+            onMouseEnter={e => { if(page!=="dashboard") e.currentTarget.style.background="#F0ECE8"; }}
+            onMouseLeave={e => { if(page!=="dashboard") e.currentTarget.style.background="transparent"; }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ fontSize:13, color:page==="dashboard"?"#8B7355":C.label }}>◈</span>
+              <div>
+                <div style={{ fontSize:11, fontWeight:700, color:page==="dashboard"?C.ink:C.muted, letterSpacing:0.5 }}>DASHBOARD</div>
+                <div style={{ fontSize:8, color:page==="dashboard"?"#8B7355":C.label, letterSpacing:1.5, marginTop:2 }}>LIVE · AZIONI RAPIDE</div>
+              </div>
+            </div>
+          </button>
+
+          <button onClick={() => setPage("storico")}
+            style={{ background:page==="storico"?"rgba(255,252,248,0.85)":"transparent", border:"none", borderLeft:`2px solid ${page==="storico"?"#5C6B8B":"transparent"}`, padding:"13px 22px", cursor:"pointer", textAlign:"left", transition:"all 0.2s" }}
+            onMouseEnter={e => { if(page!=="storico") e.currentTarget.style.background="#F0ECE8"; }}
+            onMouseLeave={e => { if(page!=="storico") e.currentTarget.style.background="transparent"; }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ fontSize:13, color:page==="storico"?"#5C6B8B":C.label }}>◉</span>
+              <div>
+                <div style={{ fontSize:11, fontWeight:700, color:page==="storico"?C.ink:C.muted, letterSpacing:0.5 }}>STORICO FATTURATO</div>
+                <div style={{ fontSize:8, color:page==="storico"?"#5C6B8B":C.label, letterSpacing:1.5, marginTop:2 }}>GRAFICI · RECORD</div>
+              </div>
+            </div>
+          </button>
+
+          <div style={{ height:1, background:"rgba(200,191,176,0.35)", margin:"10px 16px 14px" }} />
+          <div style={{ fontSize:8, color:C.label, letterSpacing:3, marginBottom:10, padding:"0 22px" }}>MODULI</div>
+
+          {MODULES.filter(m => m.id !== "people" && m.id !== "ai_commerce").map((m,i) => {
+            const on = page==="module" && activeIdx===i;
+            return (
+              <button key={m.id} onClick={() => { setActiveIdx(i); setPage("module"); }}
+                style={{ background:on?"rgba(255,252,248,0.85)":"transparent", border:"none", borderLeft:`2px solid ${on?m.color:"transparent"}`, padding:"13px 22px", cursor:"pointer", textAlign:"left", transition:"all 0.2s" }}
+                onMouseEnter={e => { if(!on) e.currentTarget.style.background="#F0ECE8"; }}
+                onMouseLeave={e => { if(!on) e.currentTarget.style.background="transparent"; }}>
+                <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+                  <span style={{ fontFamily:C.serif, fontSize:14, fontWeight:300, color:on?m.color:C.label, minWidth:18, marginTop:1 }}>{m.num}</span>
+                  <div>
+                    <div style={{ fontSize:11, fontWeight:600, color:on?C.ink:C.muted, letterSpacing:0.4, lineHeight:1.3, marginBottom:2 }}>{m.label}</div>
+                    <div style={{ fontSize:9, color:on?m.color:C.label, letterSpacing:1.4 }}>{m.sub.toUpperCase()}</div>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+          {/* People reminder */}
+          <button onClick={() => { setActiveIdx(MODULES.findIndex(m=>m.id==="people")); setPage("module"); }}
+            style={{ background:page==="module"&&MODULES[activeIdx]?.id==="people"?"rgba(255,252,248,0.85)":"transparent", border:"none", borderLeft:`2px solid ${page==="module"&&MODULES[activeIdx]?.id==="people"?"#7A6B8B":"transparent"}`, padding:"13px 22px", cursor:"pointer", textAlign:"left", transition:"all 0.2s", marginTop:2 }}
+            onMouseEnter={e => { if(!(page==="module"&&MODULES[activeIdx]?.id==="people")) e.currentTarget.style.background="#F0ECE8"; }}
+            onMouseLeave={e => { if(!(page==="module"&&MODULES[activeIdx]?.id==="people")) e.currentTarget.style.background="transparent"; }}>
+            <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+              <span style={{ fontFamily:C.serif, fontSize:14, fontWeight:300, color:page==="module"&&MODULES[activeIdx]?.id==="people"?"#7A6B8B":C.label, minWidth:18, marginTop:1 }}>VI</span>
+              <div>
+                <div style={{ fontSize:11, fontWeight:600, color:page==="module"&&MODULES[activeIdx]?.id==="people"?C.ink:C.muted, letterSpacing:0.4, lineHeight:1.3, marginBottom:2 }}>People First</div>
+                <div style={{ fontSize:9, color:page==="module"&&MODULES[activeIdx]?.id==="people"?"#7A6B8B":C.label, letterSpacing:1.4 }}>DA FARE</div>
+              </div>
+            </div>
+          </button>
+
+
+          {/* AI Commerce button */}
+          <button onClick={() => { setActiveIdx(MODULES.findIndex(m=>m.id==="ai_commerce")); setPage("module"); }}
+            style={{ background:page==="module"&&MODULES[activeIdx]?.id==="ai_commerce"?"rgba(255,252,248,0.85)":"transparent", border:"none", borderLeft:`2px solid ${page==="module"&&MODULES[activeIdx]?.id==="ai_commerce"?"#4B7A8B":"transparent"}`, padding:"13px 22px", cursor:"pointer", textAlign:"left", transition:"all 0.2s" }}
+            onMouseEnter={e => { if(!(page==="module"&&MODULES[activeIdx]?.id==="ai_commerce")) e.currentTarget.style.background="#F0ECE8"; }}
+            onMouseLeave={e => { if(!(page==="module"&&MODULES[activeIdx]?.id==="ai_commerce")) e.currentTarget.style.background="transparent"; }}>
+            <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+              <span style={{ fontFamily:C.serif, fontSize:14, fontWeight:300, color:page==="module"&&MODULES[activeIdx]?.id==="ai_commerce"?"#4B7A8B":C.label, minWidth:18, marginTop:1 }}>VII</span>
+              <div>
+                <div style={{ fontSize:11, fontWeight:600, color:page==="module"&&MODULES[activeIdx]?.id==="ai_commerce"?C.ink:C.muted, letterSpacing:0.4, lineHeight:1.3, marginBottom:2 }}>AI Commerce Layer</div>
+                <div style={{ fontSize:9, color:page==="module"&&MODULES[activeIdx]?.id==="ai_commerce"?"#4B7A8B":C.label, letterSpacing:1.4 }}>CHATBOT · ORDINE VOCALE</div>
+              </div>
+            </div>
+          </button>
+
+          <div style={{ flex:1 }} />
+          <div style={{ padding:"18px 22px", borderTop:"1px solid rgba(200,191,176,0.3)" }}>
+            <div style={{ fontSize:8, color:C.label, letterSpacing:2, marginBottom:12 }}>CONNESSIONI</div>
+            {[["API Competitor","14/14"],["Sync Database","LIVE"],["AI Engine","ONLINE"]].map(([l,v],i) => (
+              <div key={i} style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+                <span style={{ fontSize:10, color:C.muted }}>{l}</span>
+                <span style={{ fontSize:10, color:"#5C7A5C", fontFamily:"monospace" }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* MAIN */}
+        <div style={{ flex:1, overflow:"auto", padding:"34px 38px" }}>
+          {page==="dashboard" && <DashboardView onScan={handleScan} scanResult={scanResult} onInvoice={handleInvoice} invoiceResult={invoiceResult} />}
+          {page==="module" && MODULES[activeIdx]?.id !== "ai_commerce" && <ModuleView mod={MODULES[activeIdx]} />}
+          {page==="module" && MODULES[activeIdx]?.id === "ai_commerce" && <AICommerceView />}
+          {page==="storico"   && <StoricoView />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+  </script>
+</body>
+</html>
